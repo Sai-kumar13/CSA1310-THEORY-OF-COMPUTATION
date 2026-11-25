@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Compare Products - AdaptiveShop{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div>
+                <h1><i class="fa-solid fa-scale-balanced"></i> Product Comparison Workspace</h1>
+                <p>Side-by-side technical and price comparison for up to 4 selected products.</p>
+            </div>
+            <div id="compareActions" style="display:none; gap:10px;">
+                <button class="btn btn-secondary btn-sm" onclick="clearComparison()"><i class="fa-solid fa-trash-can"></i> Clear All</button>
+                <a href="/products" class="btn btn-primary btn-sm">+ Add More Products</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container" style="padding: 2rem 0;">
+    <div id="compareContent">
+        <div class="loading"><div class="spinner"></div> Loading comparison list...</div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    loadComparisonTable();
+});
+</script>
+{% endblock %}

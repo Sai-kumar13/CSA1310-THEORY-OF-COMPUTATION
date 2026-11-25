@@ -1,0 +1,269 @@
+{% extends "base.html" %}
+{% block title %}TOC Demonstration - AdaptiveShop{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>🔬 Theory of Computation (TOC) Interactive Demonstration</h1>
+        <p>Real-time execution of Deterministic Finite Automata (DFA), Non-Deterministic Finite Automata (NFA), Regular Expressions, and Pattern Matching algorithms.</p>
+    </div>
+</div>
+
+<div class="container" style="padding-top: 1.5rem;">
+    <!-- Navigation Tabs -->
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="dfaTab" onclick="switchTab('dfaTab')">1. DFA Demonstration</button>
+        <button class="tab-btn" data-tab="nfaTab" onclick="switchTab('nfaTab')">2. NFA Demonstration</button>
+        <button class="tab-btn" data-tab="regexTab" onclick="switchTab('regexTab')">3. Regular Expressions</button>
+        <button class="tab-btn" data-tab="searchPatternTab" onclick="switchTab('searchPatternTab')">4. Product Search Automaton</button>
+        <button class="tab-btn" data-tab="cfgTab" onclick="switchTab('cfgTab')">5. Context-Free Grammar (CFG)</button>
+        <button class="tab-btn" data-tab="intentTab" onclick="switchTab('intentTab')">6. Search Intent FSM</button>
+        <button class="tab-btn" data-tab="typoTab" onclick="switchTab('typoTab')">7. Edit Distance & Typos</button>
+        <button class="tab-btn" data-tab="filterTab" onclick="switchTab('filterTab')">8. Adaptive Filter Automaton</button>
+    </div>
+
+    <!-- TAB 1: DFA Demonstration -->
+    <div id="dfaTab" class="tab-content active">
+        <div class="toc-section">
+            <h3>Deterministic Finite Automaton (DFA) Processor</h3>
+            <p style="color:var(--text-secondary); margin-bottom: 1rem;">
+                A DFA represents a formal 5-tuple \(M = (Q, \Sigma, \delta, q_0, F)\). Every state has exactly one transition for each symbol in the alphabet.
+            </p>
+
+            <div class="filter-group" style="max-width: 400px; margin-bottom: 1rem;">
+                <label>Select Demonstration Model:</label>
+                <select id="dfaDemoType" onchange="toggleDFAInputs()">
+                    <option value="pattern">Substring Pattern Matcher (KMP-DFA)</option>
+                    <option value="email">Email Validator DFA (username@domain.tld)</option>
+                    <option value="product_code">Product Code Validator (e.g. AB123)</option>
+                </select>
+            </div>
+
+            <div id="dfaPatternGroup" class="filter-group" style="max-width: 500px; margin-bottom: 1rem;">
+                <label>Target Substring Pattern (Language \(\Sigma^*\)):</label>
+                <input type="text" id="dfaPattern" class="form-control" style="width:100%; padding: 8px 12px; border:1px solid var(--border); border-radius: var(--radius);" value="phone" placeholder="Enter target keyword (e.g. phone, watch, air)">
+            </div>
+
+            <label style="font-weight:600; font-size:0.85rem; color:var(--text-secondary); display:block; margin-bottom:0.5rem;">Input String to Evaluate \((w \in \Sigma^*)\):</label>
+            <div class="demo-input-group">
+                <input type="text" id="dfaInput" value="iPhone 15 Pro Max" placeholder="Enter test string to process">
+                <button class="btn btn-primary" onclick="runDFADemo()">▶ Execute DFA</button>
+                <button class="btn btn-secondary" onclick="resetDFADemo()">Reset</button>
+            </div>
+
+            <div id="dfaResult"></div>
+        </div>
+    </div>
+
+    <!-- TAB 2: NFA Demonstration -->
+    <div id="nfaTab" class="tab-content">
+        <div class="toc-section">
+            <h3>Non-Deterministic Finite Automaton (NFA) Processor</h3>
+            <p style="color:var(--text-secondary); margin-bottom: 1rem;">
+                An NFA allows multiple next states from a single symbol as well as \(\epsilon\)-transitions: \(M = (Q, \Sigma, \delta, q_0, F)\) where \(\delta: Q \times (\Sigma \cup \{\epsilon\}) \to \mathcal{P}(Q)\). The machine accepts if at least one concurrent branch reaches an accepting state.
+            </p>
+
+            <div class="filter-group" style="max-width: 500px; margin-bottom: 1rem;">
+                <label>Target Keywords / Multi-Pattern Branches (comma separated):</label>
+                <input type="text" id="nfaPatterns" style="width:100%; padding: 8px 12px; border:1px solid var(--border); border-radius: var(--radius);" value="smart, watch, lap" placeholder="e.g. smart, watch, lap">
+            </div>
+
+            <label style="font-weight:600; font-size:0.85rem; color:var(--text-secondary); display:block; margin-bottom:0.5rem;">Input Token / String:</label>
+            <div class="demo-input-group">
+                <input type="text" id="nfaInput" value="smartwatch" placeholder="Enter text to evaluate across branches">
+                <button class="btn btn-primary" onclick="runNFADemo()">▶ Execute NFA</button>
+                <button class="btn btn-secondary" onclick="resetNFADemo()">Reset</button>
+            </div>
+
+            <div id="nfaResult"></div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Regular Expressions -->
+    <div id="regexTab" class="tab-content">
+        <div class="toc-section">
+            <h3>Regular Expression (Regex) Formal Pattern Matcher</h3>
+            <p style="color:var(--text-secondary); margin-bottom: 1rem;">
+                According to Kleene's Theorem, regular languages are precisely those accepted by finite automata and described by regular expressions. Test tokenization, lookaheads, and character classes against text.
+            </p>
+
+            <div class="filter-group" style="max-width: 500px; margin-bottom: 1rem;">
+                <label>Regular Expression Pattern:</label>
+                <input type="text" id="regexPattern" style="width:100%; padding: 8px 12px; border:1px solid var(--border); border-radius: var(--radius);" value="\b(ultra|pro|max)\b|([0-9]+(\.[0-9]+)?)" placeholder="e.g. \b(ultra|pro|max)\b">
+            </div>
+
+            <label style="font-weight:600; font-size:0.85rem; color:var(--text-secondary); display:block; margin-bottom:0.5rem;">Test Input Corpus:</label>
+            <div class="demo-input-group">
+                <input type="text" id="regexInput" value="Apple Watch Ultra 2 with 3000 nits and M3 chip 15.3 inch" placeholder="Text to match against regex">
+                <button class="btn btn-primary" onclick="runRegexDemo()">▶ Execute Regex</button>
+                <button class="btn btn-secondary" onclick="resetRegexDemo()">Reset</button>
+            </div>
+
+            <div id="regexResult"></div>
+        </div>
+    </div>
+
+    <!-- TAB 4: Product Search Automaton -->
+    <div id="searchPatternTab" class="tab-content">
+        <div class="toc-section">
+            <h3>Live Catalog Automaton Verification</h3>
+            <p style="color:var(--text-secondary); margin-bottom: 1rem;">
+                Shows how real user queries are decomposed into tokens, transformed into search DFAs and NFAs, and verified against all live products stored in the database.
+            </p>
+
+            <label style="font-weight:600; font-size:0.85rem; color:var(--text-secondary); display:block; margin-bottom:0.5rem;">Search Query:</label>
+            <div class="demo-input-group">
+                <input type="text" id="searchPatternQuery" value="wireless headphones" placeholder="Enter keywords e.g. noise cancel, laptop, galaxy">
+                <button class="btn btn-primary" onclick="runSearchPatternDemo()">▶ Analyze Against Catalog</button>
+                <button class="btn btn-secondary" onclick="resetSearchPatternDemo()">Reset</button>
+            </div>
+
+            <div id="searchPatternResult"></div>
+        </div>
+    <!-- TAB 5: Context-Free Grammar (CFG) Demonstration -->
+    <div id="cfgTab" class="tab-content">
+        <div class="toc-section">
+            <h3>Context-Free Grammar (CFG) Natural Language Search Engine</h3>
+            <p style="color:var(--text-secondary); margin-bottom: 1rem;">
+                A Context-Free Grammar is a 4-tuple \(G = (V_N, V_T, P, S)\) that generates syntactic structures via non-terminal derivations. This module parses natural language queries into concrete parse trees and extracts database query constraints.
+            </p>
+
+            <div style="margin-bottom:1rem;">
+                <label style="font-weight:600; font-size:0.85rem; color:var(--text-secondary); display:block; margin-bottom:0.4rem;">Select or Type a Natural Language Query:</label>
+                <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:0.75rem;">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="setCFGQuery('Show laptops under 50000.')">"Show laptops under 50000."</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="setCFGQuery('Find smartphones with 8GB RAM.')">"Find smartphones with 8GB RAM."</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="setCFGQuery('Show headphones below 3000 with rating above 4.')">"Show headphones below 3000 with rating above 4."</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="setCFGQuery('Find Samsung phones between 15000 and 30000.')">"Find Samsung phones between 15000 and 30000."</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="setCFGQuery('Show shoes above 4 stars.')">"Show shoes above 4 stars."</button>
+                </div>
+            </div>
+
+            <div class="demo-input-group">
+                <input type="text" id="cfgQueryInput" value="Show laptops under 50000." placeholder="Enter natural language query">
+                <button class="btn btn-primary" onclick="runCFGDemo()">▶ Parse with CFG</button>
+                <button class="btn btn-secondary" onclick="resetCFGDemo()">Reset</button>
+            </div>
+
+            <div id="cfgResult"></div>
+        </div>
+    </div>
+
+    <!-- TAB 6: Search Intent State Machine (FSM) -->
+    <div id="intentTab" class="tab-content">
+        <div class="toc-section">
+            <h3>Search Intent Evolution — Finite-State Model</h3>
+            <p style="color:var(--text-secondary); margin-bottom: 1rem;">
+                Models the user's changing search intent as a formal Finite-State Machine \(M = (Q, \Sigma, \delta, q_0, F)\).
+                Consecutive queries act as input symbols that trigger state transitions: broadening, narrowing, specification refining, or price comparing.
+            </p>
+
+            <div style="margin-bottom:1rem;">
+                <label style="font-weight:600; font-size:0.85rem; color:var(--text-secondary); display:block; margin-bottom:0.4rem;">Preset Search Progression Sequences:</label>
+                <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:0.75rem;">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="setIntentSequence(['Laptop', 'Gaming Laptop', 'Gaming Laptop with 16GB RAM', 'Gaming Laptop under 60000'])">Example 1: Laptop → Gaming → Specs → Price</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="setIntentSequence(['Phone', 'Samsung phone', 'Samsung Galaxy under 30000', 'Apple iPhone'])">Example 2: Phone → Brand → Budget → Switch</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="setIntentSequence(['Shoes', 'Nike running shoes', 'Nike running shoes under 5000', 'Shoes'])">Example 3: Broad → Narrow → Price → Broaden</button>
+                </div>
+            </div>
+
+            <label style="font-weight:600; font-size:0.85rem; color:var(--text-secondary); display:block; margin-bottom:0.5rem;">Consecutive Query Sequence (comma separated or multi-line):</label>
+            <div class="demo-input-group">
+                <input type="text" id="intentQueriesInput" value="Laptop, Gaming Laptop, Gaming Laptop with 16GB RAM, Gaming Laptop under 60000" placeholder="Enter comma-separated queries in sequence">
+                <button class="btn btn-primary" onclick="runIntentDemo()">▶ Trace Intent Transitions</button>
+                <button class="btn btn-secondary" onclick="resetIntentDemo()">Reset</button>
+            </div>
+
+            <div id="intentResult"></div>
+        </div>
+    </div>
+
+    <!-- TAB 7: Typo Correction & Levenshtein Edit Distance -->
+    <div id="typoTab" class="tab-content">
+        <div class="toc-section">
+            <h3>Approximate Pattern Matching — Levenshtein Edit Distance Transducer</h3>
+            <p style="color:var(--text-secondary); margin-bottom: 1rem;">
+                Demonstrates dynamic programming matrix computation for string edit distance (Insert, Delete, Substitute operations).
+                Used for zero-result recovery, automatic spelling correction, and approximate catalog matching.
+            </p>
+
+            <div style="margin-bottom:1rem;">
+                <label style="font-weight:600; font-size:0.85rem; color:var(--text-secondary); display:block; margin-bottom:0.4rem;">Preset Misspellings & Corrections:</label>
+                <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:0.75rem;">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="setTypoPair('samsng', 'Samsung')">samsng → Samsung</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="setTypoPair('lapotp', 'Laptop')">lapotp → Laptop</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="setTypoPair('hedphones', 'Headphones')">hedphones → Headphones</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="setTypoPair('iphne', 'iPhone')">iphne → iPhone</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="setTypoPair('soony', 'Sony')">soony → Sony</button>
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:1rem;">
+                <div>
+                    <label style="font-weight:600; font-size:0.85rem; color:var(--text-secondary);">Input / Misspelled String \((s_1)\):</label>
+                    <input type="text" id="typoSourceInput" class="form-control" style="width:100%; padding:8px 12px; border:1px solid var(--border); border-radius:var(--radius); margin-top:4px;" value="samsng">
+                </div>
+                <div>
+                    <label style="font-weight:600; font-size:0.85rem; color:var(--text-secondary);">Target / Vocabulary Word \((s_2)\):</label>
+                    <input type="text" id="typoTargetInput" class="form-control" style="width:100%; padding:8px 12px; border:1px solid var(--border); border-radius:var(--radius); margin-top:4px;" value="Samsung">
+                </div>
+            </div>
+
+            <div class="demo-input-group">
+                <button class="btn btn-primary" onclick="runTypoDemo()">▶ Compute Edit Distance Matrix</button>
+                <button class="btn btn-secondary" onclick="resetTypoDemo()">Reset</button>
+            </div>
+
+            <div id="typoResult"></div>
+        </div>
+    </div>
+
+    <!-- TAB 8: Session-Aware Adaptive Filter Automaton -->
+    <div id="filterTab" class="tab-content">
+        <div class="toc-section">
+            <h3>Adaptive Filter Selection — State-Based Mealy Machine</h3>
+            <p style="color:var(--text-secondary); margin-bottom: 1rem;">
+                Models an adaptive filter advisor as a finite-state machine where state transitions occur when filters are applied or removed.
+                The machine evaluates the current filter configuration and catalog constraints to emit the optimal next filter suggestions.
+            </p>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:1rem;">
+                <div>
+                    <label style="font-weight:600; font-size:0.85rem; color:var(--text-secondary);">Browsing Context Category:</label>
+                    <select id="filterDemoCategory" class="form-control" style="width:100%; padding:8px 12px; border:1px solid var(--border); border-radius:var(--radius); margin-top:4px;" onchange="runFilterDemo()">
+                        <option value="Smartphones">Smartphones</option>
+                        <option value="Laptops" selected>Laptops</option>
+                        <option value="Headphones">Headphones</option>
+                        <option value="Smartwatches">Smartwatches</option>
+                        <option value="Clothing">Clothing</option>
+                        <option value="Shoes">Shoes</option>
+                        <option value="Home Appliances">Home Appliances</option>
+                        <option value="Accessories">Accessories</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-weight:600; font-size:0.85rem; color:var(--text-secondary);">Simulated Applied Brand:</label>
+                    <input type="text" id="filterDemoBrand" class="form-control" style="width:100%; padding:8px 12px; border:1px solid var(--border); border-radius:var(--radius); margin-top:4px;" value="Dell" placeholder="Optional brand constraint e.g. Dell, Apple">
+                </div>
+            </div>
+
+            <div class="demo-input-group">
+                <button class="btn btn-primary" onclick="runFilterDemo()">▶ Run Filter Automaton Analysis</button>
+                <button class="btn btn-secondary" onclick="resetFilterDemo()">Reset</button>
+            </div>
+
+            <div id="filterResult"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/toc_demo.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Run an initial demo on load so the user sees real-time visualization right away
+    runDFADemo();
+});
+</script>
+{% endblock %}

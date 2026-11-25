@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% block title %}All Products - AdaptiveShop{% endblock %}
+
+{% block content %}
+<!-- Search Bar -->
+<section class="search-section" style="padding:1.5rem 0;">
+    <div class="container">
+        <div class="search-wrapper">
+            <div class="search-mode-toggle" style="display:flex; justify-content:center; gap:8px; margin-bottom:12px;">
+                <button type="button" class="search-mode-btn active" id="modeStandardBtn" onclick="setSearchMode('standard')"><i class="fa-solid fa-magnifying-glass"></i> Standard Search</button>
+                <button type="button" class="search-mode-btn" id="modeNaturalBtn" onclick="setSearchMode('natural')"><i class="fa-solid fa-comment-dots"></i> Smart Assistant</button>
+            </div>
+            <div class="search-container-relative">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search products..." autocomplete="off">
+                    <button id="searchBtn"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+                </div>
+                <div class="search-suggestions" id="searchSuggestions"></div>
+            </div>
+            <!-- Natural Language Quick Examples -->
+            <div id="naturalExamples" style="display:none; margin-top:0.75rem; font-size:0.8rem; color:rgba(255,255,255,0.9);">
+                <span style="font-weight:600;"><i class="fa-solid fa-lightbulb"></i> Try asking: </span>
+                <span class="cfg-example-tag" onclick="selectNaturalExample('Show laptops under 50000.')">Show laptops under 50000</span>
+                <span class="cfg-example-tag" onclick="selectNaturalExample('Find smartphones with 8GB RAM.')">Smartphones with 8GB RAM</span>
+                <span class="cfg-example-tag" onclick="selectNaturalExample('Show headphones below 3000 with rating above 4.')">Headphones below 3000 rating 4+</span>
+                <span class="cfg-example-tag" onclick="selectNaturalExample('Find Samsung phones between 15000 and 30000.')">Samsung phones ₹15k - ₹30k</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <div class="page-with-sidebar">
+        <!-- Filters Sidebar -->
+        <aside class="filters-sidebar">
+            <h3><i class="fa-solid fa-sliders"></i> Filters</h3>
+
+            <div class="filter-group">
+                <label>Category</label>
+                <select id="filterCategory" onchange="applyFilters()">
+                    <option value="">All Categories</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Brand</label>
+                <select id="filterBrand" onchange="applyFilters()">
+                    <option value="">All Brands</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Price Range (₹)</label>
+                <div class="price-inputs">
+                    <input type="number" id="filterMinPrice" placeholder="Min ₹" min="0" step="500">
+                    <span>to</span>
+                    <input type="number" id="filterMaxPrice" placeholder="Max ₹" min="0" step="500">
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>Minimum Rating</label>
+                <div class="rating-options">
+                    <label class="rating-option">
+                        <input type="radio" name="rating" value="4.5" onchange="applyFilters()">
+                        ★★★★½ 4.5+
+                    </label>
+                    <label class="rating-option">
+                        <input type="radio" name="rating" value="4.0" onchange="applyFilters()">
+                        ★★★★☆ 4.0+
+                    </label>
+                    <label class="rating-option">
+                        <input type="radio" name="rating" value="3.5" onchange="applyFilters()">
+                        ★★★½☆ 3.5+
+                    </label>
+                    <label class="rating-option">
+                        <input type="radio" name="rating" value="3.0" onchange="applyFilters()">
+                        ★★★☆☆ 3.0+
+                    </label>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>Sort By</label>
+                <select id="sortBy" onchange="applyFilters()">
+                    <option value="relevant">Most Relevant</option>
+                    <option value="price_asc">Price: Low to High</option>
+                    <option value="price_desc">Price: High to Low</option>
+                    <option value="rating">Highest Rating</option>
+                </select>
+            </div>
+
+            <div class="filter-actions">
+                <button class="btn btn-primary btn-sm" onclick="applyFilters()">Apply Filters</button>
+                <button class="btn btn-secondary btn-sm" onclick="resetFilters()">Reset</button>
+            </div>
+        </aside>
+
+        <!-- Products Area -->
+        <main>
+            <!-- Search Intent Journey Panel (FSM) -->
+            <div id="searchJourneySection" class="journey-panel" style="display:none;">
+                <div class="journey-header">
+                    <div class="journey-title-wrap">
+                        <span class="journey-icon">🧭</span>
+                        <div>
+                            <h4 style="margin:0; font-size:0.95rem; font-weight:700;">Search Intent Journey</h4>
+                            <span id="journeyStateBadge" class="journey-state-badge">INITIAL</span>
+                            <span id="journeyStateDesc" class="journey-state-desc"></span>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary btn-sm" onclick="clearSearchJourney()" title="Reset session journey" style="font-size:0.75rem; padding:4px 8px;">🔄 Reset Journey</button>
+                </div>
+                <div id="journeyTimeline" class="journey-timeline"></div>
+                <div id="journeySuggestionsWrap" class="journey-suggestions-wrap" style="display:none;">
+                    <span class="journey-sugg-label">💡 Suggested next searches:</span>
+                    <div id="journeySuggestions" class="journey-suggestions-chips"></div>
+                </div>
+            </div>
+
+            <!-- Adaptive Filter Suggestions (State-Based Advisor) -->
+            <div id="adaptiveFiltersSection" class="adaptive-filters-panel" style="display:none;">
+                <div class="adaptive-filters-header">
+                    <span class="icon">🎛️</span>
+                    <div>
+                        <span class="adaptive-filters-title">Recommended Filters for Your Context</span>
+                        <span id="filterStateBadge" class="filter-state-badge">AUTO-ADAPTING</span>
+                    </div>
+                </div>
+                <div id="adaptiveFilterChips" class="adaptive-filter-chips"></div>
+            </div>
+
+            <!-- Zero-Result Typo Recovery Section (Levenshtein Distance) -->
+            <div id="zeroResultRecoverySection" class="typo-recovery-panel" style="display:none;"></div>
+
+            <!-- Applied Filters -->
+            <div class="applied-filters" id="appliedFilters"></div>
+
+            <!-- Results Info -->
+            <div class="results-info" id="resultsInfo" style="display:none;"></div>
+
+            <!-- Automata Info (shown after search) -->
+            <div id="automataInfo" style="display:none;"></div>
+
+            <!-- Products Grid -->
+            <div class="products-grid" id="productsGrid">
+                <div class="loading"><div class="spinner"></div> Loading products...</div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    loadFilterOptions();
+
+    // Check URL params
+    const urlParams = new URLSearchParams(window.location.search);
+    const q = urlParams.get('q');
+    const category = urlParams.get('category');
+
+    if (q) {
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) searchInput.value = q;
+        performSearch(q);
+    } else if (category) {
+        setTimeout(() => {
+            const catSelect = document.getElementById('filterCategory');
+            if (catSelect) catSelect.value = category;
+            applyFilters();
+        }, 500);
+    } else {
+        loadProducts();
+    }
+
+    // Apply filters when price inputs change (on blur)
+    document.getElementById('filterMinPrice')?.addEventListener('change', applyFilters);
+    document.getElementById('filterMaxPrice')?.addEventListener('change', applyFilters);
+});
+</script>
+{% endblock %}

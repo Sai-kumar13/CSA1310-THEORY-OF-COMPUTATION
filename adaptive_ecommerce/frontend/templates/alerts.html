@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Price Drop Alerts - AdaptiveShop{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1><i class="fa-solid fa-bell"></i> Price Drop Alert Center</h1>
+        <p>Real-time notifications triggered when product prices drop to or below your target threshold.</p>
+    </div>
+</div>
+
+<div class="container" style="padding: 2rem 0;">
+    <!-- Simulation Control Panel -->
+    <div class="toc-section" style="border-left: 4px solid var(--accent); background: #f0fdfa;">
+        <h3 style="color: #0f766e; border-bottom-color: #99f6e4;"><i class="fa-solid fa-flask"></i> Testing Panel: Simulate Price Drop</h3>
+        <p style="color:var(--text-secondary); margin-bottom: 1rem; font-size:0.9rem;">
+            Test the live price-drop detection system. Select a product, enter a lower price, and execute an immediate database update to observe alerts trigger in real time.
+        </p>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+            <select id="simProductSelect" style="padding:8px 12px; border:1px solid var(--border); border-radius:var(--radius); min-width:240px;">
+                <option value="">Select a product to simulate...</option>
+            </select>
+            <input type="number" id="simNewPriceInput" placeholder="New Lower Price (₹)" style="padding:8px 12px; border:1px solid var(--border); border-radius:var(--radius); width:180px;">
+            <button class="btn btn-primary btn-sm" onclick="runPriceDropSimulation()"><i class="fa-solid fa-bolt"></i> Update Price & Trigger Alerts</button>
+        </div>
+        <div id="simResult" style="margin-top:0.75rem; font-size:0.85rem;"></div>
+    </div>
+
+    <!-- Triggered Alerts Section -->
+    <section class="section" id="triggeredAlertsSection" style="margin-top:1.5rem;">
+        <h2 class="section-title"><span class="icon"><i class="fa-solid fa-tag"></i></span> Triggered Price Drops <span id="triggeredCountBadge" class="badge badge-success">0</span></h2>
+        <div id="triggeredAlertsList">
+            <div class="loading"><div class="spinner"></div> Checking alerts...</div>
+        </div>
+    </section>
+
+    <!-- Active Alerts Section -->
+    <section class="section" id="activeAlertsSection" style="margin-top:1.5rem;">
+        <h2 class="section-title"><span class="icon"><i class="fa-solid fa-clock"></i></span> Active Price Alerts <span id="activeCountBadge" class="badge badge-primary">0</span></h2>
+        <div id="activeAlertsList">
+            <div class="loading"><div class="spinner"></div> Loading active alerts...</div>
+        </div>
+    </section>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    loadAlertsPage();
+    populateSimulationDropdown();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Product Details - AdaptiveShop{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <a href="/products" style="color:var(--text-muted);font-size:0.85rem;">← Back to Products</a>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Product Detail Content -->
+    <div id="productDetailContent">
+        <div class="loading"><div class="spinner"></div> Loading product details...</div>
+    </div>
+
+    <!-- Similar Products -->
+    <section class="section" style="margin-top:2rem;">
+        <h2 class="section-title"><span class="icon"><i class="fa-solid fa-shapes"></i></span> Similar Products</h2>
+        <div class="products-scroll" id="similarProducts">
+            <div class="loading"><div class="spinner"></div> Loading...</div>
+        </div>
+    </section>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const productId = {{ product_id }};
+    loadProductDetail(productId);
+});
+</script>
+{% endblock %}

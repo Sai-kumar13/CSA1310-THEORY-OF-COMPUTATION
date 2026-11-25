@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}AdaptiveShop - Home{% endblock %}
+
+{% block content %}
+<!-- Search Section -->
+<section class="search-section">
+    <div class="container">
+        <div class="search-wrapper">
+            <h2>Discover Quality Products at the Best Prices</h2>
+            <p>Shop top smartphones, laptops, audio gear, lifestyle apparel & home essentials</p>
+            <div class="search-mode-toggle" style="display:flex; justify-content:center; gap:8px; margin-bottom:12px;">
+                <button type="button" class="search-mode-btn active" id="modeStandardBtn" onclick="setSearchMode('standard')"><i class="fa-solid fa-magnifying-glass"></i> Standard Search</button>
+                <button type="button" class="search-mode-btn" id="modeNaturalBtn" onclick="setSearchMode('natural')"><i class="fa-solid fa-comment-dots"></i> Smart Assistant</button>
+            </div>
+            <div class="search-container-relative">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search for smartphones, laptops, headphones..." autocomplete="off">
+                    <button id="searchBtn"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+                </div>
+                <div class="search-suggestions" id="searchSuggestions"></div>
+            </div>
+            <!-- Natural Language Quick Examples (shown in natural mode) -->
+            <div id="naturalExamples" style="display:none; margin-top:0.75rem; font-size:0.8rem; color:rgba(255,255,255,0.9);">
+                <span style="font-weight:600;"><i class="fa-solid fa-lightbulb"></i> Try asking: </span>
+                <span class="cfg-example-tag" onclick="selectNaturalExample('Show laptops under 50000.')">Show laptops under 50000</span>
+                <span class="cfg-example-tag" onclick="selectNaturalExample('Find smartphones with 8GB RAM.')">Smartphones with 8GB RAM</span>
+                <span class="cfg-example-tag" onclick="selectNaturalExample('Show headphones below 3000 with rating above 4.')">Headphones below 3000 rating 4+</span>
+                <span class="cfg-example-tag" onclick="selectNaturalExample('Find Samsung phones between 15000 and 30000.')">Samsung phones ₹15k - ₹30k</span>
+            </div>
+            <div class="popular-searches" id="popularSearches" style="margin-top:1rem;"></div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <!-- Popular Categories -->
+    <section class="section">
+        <h2 class="section-title"><span class="icon"><i class="fa-solid fa-layer-group"></i></span> Popular Categories</h2>
+        <div class="categories-grid" id="categoriesGrid">
+            <div class="loading"><div class="spinner"></div> Loading categories...</div>
+        </div>
+    </section>
+
+    <!-- Trending Products -->
+    <section class="section">
+        <h2 class="section-title"><span class="icon"><i class="fa-solid fa-fire-flame-curved"></i></span> Trending Products</h2>
+        <div class="products-scroll" id="trendingProducts">
+            <div class="loading"><div class="spinner"></div> Loading...</div>
+        </div>
+    </section>
+
+    <!-- Recommended For You -->
+    <section class="section">
+        <div class="recommendation-section">
+            <div class="rec-header">
+                <h2 class="section-title"><span class="icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span> Recommended For You</h2>
+                <a href="/recommendations" class="btn btn-secondary btn-sm">View All →</a>
+            </div>
+            <div class="products-scroll" id="recommendedProducts">
+                <div class="loading"><div class="spinner"></div> Loading recommendations...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Explore Something New (Discovery Recommendations) -->
+    <section class="section" id="homeDiscoverySection">
+        <div class="recommendation-section">
+            <div class="rec-header">
+                <h2 class="section-title"><span class="icon"><i class="fa-solid fa-compass"></i></span> Explore Something New</h2>
+            </div>
+            <p style="color:var(--text-secondary); font-size:0.85rem; margin-top:-0.5rem; margin-bottom:1rem;">Discover products from fresh categories tailored to your style.</p>
+            <div class="products-scroll" id="homeDiscoveryProducts">
+                <div class="loading"><div class="spinner"></div> Loading discovery products...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recently Viewed -->
+    <section class="section">
+        <h2 class="section-title"><span class="icon"><i class="fa-solid fa-clock-rotate-left"></i></span> Recently Viewed</h2>
+        <div class="products-scroll" id="recentlyViewedProducts">
+            <p style="color:var(--text-muted);padding:1rem;">Browse products to see your recently viewed items here!</p>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="section">
+        <h2 class="section-title"><span class="icon"><i class="fa-solid fa-award"></i></span> Featured Products</h2>
+        <div class="products-scroll" id="featuredProducts"></div>
+    </section>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    loadHomePage();
+    // Also load trending as featured
+    fetch('/api/products?sort_by=rating&min_rating=4.5')
+        .then(r => r.json())
+        .then(data => renderProductsScroll('featuredProducts', data.products?.slice(0, 8) || []))
+        .catch(() => {});
+});
+</script>
+{% endblock %}

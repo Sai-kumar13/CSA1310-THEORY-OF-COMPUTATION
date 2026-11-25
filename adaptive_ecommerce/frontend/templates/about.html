@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}About Project - AdaptiveShop{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>ℹ️ About the Project</h1>
+        <p>Academic Capstone Project for the Subject: <strong>Theory of Computation (TOC)</strong></p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="about-section">
+        <!-- Project Overview -->
+        <div class="about-card">
+            <h2><i class="fa-solid fa-book"></i> Project Overview</h2>
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--primary-dark);">
+                Adaptive E-Commerce Search and Personalized Product Recommendation System
+            </p>
+            <p>
+                This project establishes a direct practical application of theoretical computer science concepts within a modern, production-grade e-commerce web platform. Unlike standard relational string matches, the system formalizes string recognition, token parsing, and query classification through <strong>Finite State Automata</strong> and formal language theory.
+            </p>
+        </div>
+
+        <!-- TOC Core Concepts -->
+        <div class="about-card">
+            <h2><i class="fa-solid fa-diagram-project"></i> Theory of Computation (TOC) Formalisms</h2>
+            <ul>
+                <li><strong>Deterministic Finite Automaton (DFA):</strong> Implemented as a 5-tuple \(M = (Q, \Sigma, \delta, q_0, F)\). The query string is processed symbol-by-symbol with deterministic transitions without backtracking. Used for pattern matching within product names and descriptions.</li>
+                <li><strong>Non-Deterministic Finite Automaton (NFA):</strong> Models concurrent search token verification. Supports multiple possible next states and \(\epsilon\)-transitions, traversing candidate keyword branches simultaneously.</li>
+                <li><strong>Regular Expressions & Kleene's Theorem:</strong> Proves equivalence between regular languages and finite automata. Regex patterns are applied for multi-word tokenization, partial keyword extraction, and structural validations.</li>
+                <li><strong>State Transition Tables & Trace Logging:</strong> Every step of the computational transition function \(\delta(q, a) = q'\) is recorded in real time and visualized in the UI.</li>
+                <li><strong>Context-Free Grammar (CFG) Parser:</strong> Formalized as \(G = (V_N, V_T, P, S)\) in Chomsky's hierarchy. Parses natural language product requirements via recursive descent, constructing concrete parse trees to extract database query constraints.</li>
+            </ul>
+        </div>
+
+        <!-- Three Core Modules -->
+        <div class="about-card">
+            <h2>⚙️ The Three Core Modules</h2>
+            <div class="module-cards">
+                <div class="module-card">
+                    <h4>Module 1: Adaptive Product Search</h4>
+                    <p>
+                        Tokenizes search queries and executes DFA/NFA substring recognizers against product records. Supports case-insensitivity, partial matching, real-time suggestions, and instant feedback.
+                    </p>
+                </div>
+                <div class="module-card">
+                    <h4>Module 2: Personalized Recommendation</h4>
+                    <p>
+                        Dynamically aggregates user interactions (search queries and product views). Real-time scoring updates category preference metrics and cross-recommends related catalog items.
+                    </p>
+                </div>
+                <div class="module-card">
+                    <h4>Module 3: Ranking & Adaptive Filtering</h4>
+                    <p>
+                        Applies multi-attribute filtering (category, price range, brand, star rating) with custom multi-criteria weighted scoring:
+                        <br>
+                        <code>Total = (Keyword × 3.0) + (Category × 2.5) + (Rating × 2.0) + (History × 1.5)</code>
+                    </p>
+                </div>
+                <div class="module-card">
+                    <h4>Module 4: Natural Language Search (CFG)</h4>
+                    <p>
+                        Interprets free-form natural language queries (e.g. "Show laptops under 50000") through a Context-Free Grammar parser, compiling them to structured database constraints.
+                    </p>
+                </div>
+                <div class="module-card">
+                    <h4>Module 5: Comparison & Price Alert Center</h4>
+                    <p>
+                        Enables up to 4-product side-by-side technical comparisons with best-price and top-rated badges, persistent smart wishlist, and active database price-drop notifications.
+                    </p>
+                </div>
+                <div class="module-card">
+                    <h4>Module 6: Search Intent Evolution (FSM)</h4>
+                    <p>
+                        Models user browsing as a Finite-State Machine across consecutive searches (EXPLORING ➔ SPEC_REFINING ➔ PRICE_COMPARING ➔ DECIDED) with proactive next-query recommendations.
+                    </p>
+                </div>
+                <div class="module-card">
+                    <h4>Module 7: Typo Recovery & Edit Distance Transducer</h4>
+                    <p>
+                        Recovers zero-result searches via pure Python Levenshtein edit distance dynamic programming, generating "Did you mean?" corrections and approximate catalog matches.
+                    </p>
+                </div>
+                <div class="module-card">
+                    <h4>Module 8: Adaptive Filter Advisor (Mealy Machine)</h4>
+                    <p>
+                        Context-dependent filter recommendation automaton that analyzes applied filter states and catalog distributions to suggest optimal category, brand, and specification chips.
+                    </p>
+                </div>
+                <div class="module-card">
+                    <h4>Module 9: Diversity & Discovery Recommendations</h4>
+                    <p>
+                        Balances user exploitation ("More Like What You Like") with exploration ("Explore Something New") using category relationship transition graphs to introduce fresh product domains.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Technology Architecture -->
+        <div class="about-card">
+            <h2><i class="fa-solid fa-server"></i> Technology Architecture</h2>
+            <ul>
+                <li><strong>Frontend:</strong> HTML5, CSS3 (Modern Blue/White responsive design), Vanilla JavaScript ES6+ with Fetch API (Zero external UI dependencies).</li>
+                <li><strong>Backend:</strong> Python 3 with Flask framework RESTful API.</li>
+                <li><strong>Automata Implementation:</strong> Custom Python engine (<code>backend/automata.py</code>) implementing DFA, NFA, and Regex evaluators without simulated mockups.</li>
+                <li><strong>Database:</strong> MySQL relational database storing categories, products, user activities, search history, and real-time preference vectors.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

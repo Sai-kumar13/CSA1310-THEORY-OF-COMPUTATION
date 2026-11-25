@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Search History - AdaptiveShop{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div>
+                <h1><i class="fa-solid fa-clock-rotate-left"></i> Search History</h1>
+                <p>Your recent product searches.</p>
+            </div>
+            <button class="btn btn-danger btn-sm" onclick="clearSearchHistory()"><i class="fa-solid fa-trash-can"></i> Clear History</button>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <section class="section">
+        <div class="history-list" id="historyList">
+            <div class="loading"><div class="spinner"></div> Loading search history...</div>
+        </div>
+    </section>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    loadSearchHistory();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}My Wishlist - AdaptiveShop{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div>
+                <h1><i class="fa-solid fa-heart"></i> Smart Wishlist & Saved Products</h1>
+                <p>Track your favorite products and monitor price drops in real time.</p>
+            </div>
+            <div>
+                <span id="wishlistCountBadge" class="badge badge-primary" style="font-size:0.9rem; padding:6px 14px;">0 Items Saved</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container" style="padding: 2rem 0;">
+    <div class="products-grid" id="wishlistGrid">
+        <div class="loading"><div class="spinner"></div> Loading your saved wishlist...</div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    loadWishlistPage();
+});
+</script>
+{% endblock %}
